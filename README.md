@@ -9,7 +9,9 @@ The goal of this project is to understand how CAD geometry and topology are repr
 - Entity hierarchy browser
 - Entity reference viewer
 - Raw STEP entity inspection
-  
+
+
+### Example:
 ![STEPInspector](ravioli.png) 
 ```text
 STEP FILE "Ravioli"
@@ -40,6 +42,7 @@ STEP FILE "Ravioli"
  │    └── ...
  └── ...
 ```
+
 
 🚧 **Work in Progress** 🚧
 

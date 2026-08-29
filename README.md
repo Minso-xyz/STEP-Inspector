@@ -9,7 +9,7 @@ The goal of this project is to understand how CAD geometry and topology are repr
 - Entity hierarchy browser
 - Entity reference viewer
 - Raw STEP entity inspection
-
+- CARTESIAN_POINT parsing
 
 ### Example:
 ![STEPInspector](ravioli.png) 
@@ -47,7 +47,6 @@ STEP FILE "Ravioli"
 🚧 **Work in Progress** 🚧
 
 ### Planned features:
-- CARTESIAN_POINT parsing
 - Vertex / Edge / Face construction
 - B-Rep graph visualization
 - STEP geometry explorer

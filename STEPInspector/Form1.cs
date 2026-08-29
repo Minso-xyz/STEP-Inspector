@@ -1,3 +1,4 @@
+using STEPInspector.Entities;
 using System.Runtime.Serialization.Formatters;
 using System.Text.RegularExpressions;
 
@@ -170,9 +171,23 @@ namespace STEPInspector
 
             string id = e.Node.Tag.ToString();
 
-            if(entityMap.ContainsKey(id))
+            if (entityMap.ContainsKey(id))
             {
-                richTextBox_Entity.Text = entityMap[id];
+                if (entityMap[id].Contains("CARTESIAN_POINT"))
+                {
+                    CartesianPoint cartesianPoint = CartesianPoint.ParseCartesianPoint(id + "=" + entityMap[id]);
+
+                    richTextBox_Entity.Text =
+                        $"Entity Type : CARTESIAN_POINT\n" +
+                        $"ID : {cartesianPoint.Id}\n\n" +
+                        $"X : {cartesianPoint.X}\n" +
+                        $"Y : {cartesianPoint.Y}\n" +
+                        $"Z : {cartesianPoint.Z}\n";
+                }
+                else
+                {
+                    richTextBox_Entity.Text = entityMap[id];
+                }
             }
         }
 

@@ -49,15 +49,15 @@
             treeView_STEP.Location = new Point(22, 107);
             treeView_STEP.Name = "treeView_STEP";
             treeView_STEP.ShowNodeToolTips = true;
-            treeView_STEP.Size = new Size(330, 242);
+            treeView_STEP.Size = new Size(381, 242);
             treeView_STEP.TabIndex = 9;
             treeView_STEP.AfterSelect += treeView_STEP_AfterSelect;
             // 
             // richTextBox_Entity
             // 
-            richTextBox_Entity.Location = new Point(358, 107);
+            richTextBox_Entity.Location = new Point(409, 107);
             richTextBox_Entity.Name = "richTextBox_Entity";
-            richTextBox_Entity.Size = new Size(316, 242);
+            richTextBox_Entity.Size = new Size(265, 242);
             richTextBox_Entity.TabIndex = 10;
             richTextBox_Entity.Text = "";
             // 

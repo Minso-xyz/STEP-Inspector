@@ -139,18 +139,15 @@ namespace STEPInspector
 
             foreach (string referenceId in references)
             {
-                string displayText = referenceId;
-
-                if (entityMap.TryGetValue(referenceId, out string referencedLine))
-                {
-                    string referencedType = GetEntityType(referencedLine);
-
-                    displayText = $"{referenceId} [{referencedType}]";
-                }
-
-                TreeNode referenceNode = parentNode.Nodes.Add(displayText);
+                string entityType = entityMap[referenceId];
+                TreeNode referenceNode = parentNode.Nodes.Add(referenceId + "[" + entityType + "]");
 
                 referenceNode.Tag = referenceId;
+
+                if (entityMap.ContainsKey(referenceId))
+                {
+                    AddReferenceNodes(entityMap[referenceId], referenceNode);
+                }
             }
         }
 

@@ -1,3 +1,4 @@
+using System.Runtime.Serialization.Formatters;
 using System.Text.RegularExpressions;
 
 namespace STEPInspector
@@ -8,17 +9,24 @@ namespace STEPInspector
         string[] lines;
         Dictionary<string, string> entityMap;
 
-        int count_CARTESIAN_POINT;
-        int count_VERTEX_POINT;
-        int count_EDGE_CURVE;
-        int count_ADVANCED_FACE;
-        int count_MANIFOLD_SOLID_BREP;
-
         public Form1()
         {
             InitializeComponent();
             entityMap = new Dictionary<string, string>();
         }
+
+        private readonly string[] supportedEntityTypes =
+        {
+            "CARTESIAN_POINT",
+            "VERTEX_POINT",
+            "EDGE_CURVE",
+            "ADVANCED_FACE",
+            "MANIFOLD_SOLID_BREP",
+            "LINE",
+            "VECTOR",
+            "CIRCLE",
+            "PLANE"
+        };
 
         private void button_OpenSTEPFile_Click(object sender, EventArgs e)
         {
@@ -27,11 +35,16 @@ namespace STEPInspector
 
             // Retrieve the step file path
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "STEP files (*.stp;*.step)|*.stp;*.step|All files (*.*)|*.*";
+
             DialogResult result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != DialogResult.OK)
             {
-                filePath = openFileDialog.FileName;
+                label_Status.Text = "No STEP file selected.";
+                return;
             }
+
+            filePath = openFileDialog.FileName;
 
             // Update the status
             label_Status.Text = "Parsing the STEP file...";
@@ -39,8 +52,8 @@ namespace STEPInspector
             // Read all the lines
             lines = File.ReadAllLines(filePath);
 
-            // Count the entities
-            CountAndReadEntities();
+            // Read the entities
+            ReadEntities();
 
             // Update the tree view
             UpdateTreeView();
@@ -49,45 +62,31 @@ namespace STEPInspector
             label_Status.Text = "The STEP file parsing has been completed.";
         }
 
-        private void CountAndReadEntities()
+        private void ReadEntities()
         {
-            // Clear the previous records
-            count_CARTESIAN_POINT = 0;
-            count_VERTEX_POINT = 0;
-            count_EDGE_CURVE = 0;
-            count_ADVANCED_FACE = 0;
-            count_MANIFOLD_SOLID_BREP = 0;
-
             entityMap.Clear();
 
-            // Count the entities
-            foreach (string line in lines)
+            foreach(string originalLine in lines)
             {
-                if (line.StartsWith("#") && line.Contains("CARTESIAN_POINT"))
+                string line = originalLine.Trim();
+
+                if(!line.StartsWith("#"))   // Skip the non-entity related lines
                 {
-                    count_CARTESIAN_POINT = count_CARTESIAN_POINT + 1;
-                    entityMap.Add(line.Split('=')[0], line.Split('=')[1]);
+                    continue;
                 }
-                else if (line.StartsWith("#") && line.Contains("VERTEX_POINT"))
+
+                int equalIndex = line.IndexOf('=');   // Locate the "=" in the line 
+
+                if (equalIndex < 0)
                 {
-                    count_VERTEX_POINT = count_VERTEX_POINT + 1;
-                    entityMap.Add(line.Split('=')[0], line.Split('=')[1]);
+                    continue;   // Skip the line with out "="
                 }
-                else if (line.StartsWith("#") && line.Contains("EDGE_CURVE"))
-                {
-                    count_EDGE_CURVE = count_EDGE_CURVE + 1;
-                    entityMap.Add(line.Split('=')[0], line.Split('=')[1]);
-                }
-                else if (line.StartsWith("#") && line.Contains("ADVANCED_FACE"))
-                {
-                    count_ADVANCED_FACE = count_ADVANCED_FACE + 1;
-                    entityMap.Add(line.Split('=')[0], line.Split('=')[1]);
-                }
-                else if (line.StartsWith("#") && line.Contains("MANIFOLD_SOLID_BREP"))
-                {
-                    count_MANIFOLD_SOLID_BREP = count_MANIFOLD_SOLID_BREP + 1;
-                    entityMap.Add(line.Split('=')[0], line.Split('=')[1]);
-                }
+
+                string id = line.Substring(0, equalIndex).Trim();    // Extract the entity number (e.g. #76), the string in front of "="
+
+                // Add the line with the extracted entity number as a key in the dictionary "entityMap" 
+                // entityMap["#76"] = "CARTESIAN_POINT('',(0.,0.,0.))"
+                entityMap[id] = line.Substring(equalIndex + 1).Trim();
             }
         }
 
@@ -96,70 +95,84 @@ namespace STEPInspector
             // Clear the TreeView
             treeView_STEP.Nodes.Clear();
 
-            // Add the root node
-            int countTotal = count_CARTESIAN_POINT + count_VERTEX_POINT + count_EDGE_CURVE + count_ADVANCED_FACE;
-            TreeNode root = treeView_STEP.Nodes.Add("STEP FILE = (" + countTotal + ")");
+            TreeNode root = treeView_STEP.Nodes.Add("STEP FILE");
 
-            // Add each type of the entities
-            TreeNode pointsNode = root.Nodes.Add("CARTESIAN_POINT = (" + count_CARTESIAN_POINT + ")");
-            TreeNode vertexNode = root.Nodes.Add("VERTEX_POINT = (" + count_VERTEX_POINT + ")");
-            TreeNode edgeNode = root.Nodes.Add("EDGE_CURVE = (" + count_EDGE_CURVE + ")");
-            TreeNode faceNode = root.Nodes.Add("ADVANCED_FACE = (" + count_ADVANCED_FACE + ")");
-            TreeNode solidBRepNode = root.Nodes.Add("MANIFOLD_SOLID_BREP = (" + count_MANIFOLD_SOLID_BREP + ")");
+            Dictionary<string, TreeNode> categoryNodes = new Dictionary<string, TreeNode>();
+            int countTotal = 0;
 
-            // Add the actual entities
-            // Read all the lines
-            lines = File.ReadAllLines(filePath);
-
-            // Count the entities
-            foreach (string line in lines)
+            foreach (string entityType in supportedEntityTypes)
             {
-                string idText;
+                int count = entityMap.Values.Count(line => GetEntityType(line) == entityType);
 
-                if (line.StartsWith("#") && line.Contains("CARTESIAN_POINT"))
-                {
-                    idText = line.Split('=')[0];
-                    TreeNode subNode = pointsNode.Nodes.Add(idText);
-                    AddSubTreeView(line, subNode);
-                }
-                else if (line.StartsWith("#") && line.Contains("VERTEX_POINT"))
-                {
-                    idText = line.Split('=')[0];
-                    TreeNode subNode = vertexNode.Nodes.Add(idText);
-                    AddSubTreeView(line, subNode);
-                }
-                else if (line.StartsWith("#") && line.Contains("EDGE_CURVE"))
-                {
-                    idText = line.Split('=')[0];
-                    TreeNode subNode = edgeNode.Nodes.Add(idText);
-                    AddSubTreeView(line, subNode);
-                }
-                else if (line.StartsWith("#") && line.Contains("ADVANCED_FACE"))
-                {
-                    idText = line.Split('=')[0];
-                    TreeNode subNode = faceNode.Nodes.Add(idText);
-                    AddSubTreeView(line, subNode);
-                }
-                else if (line.StartsWith("#") && line.Contains("MANIFOLD_SOLID_BREP"))
-                {
-                    idText = line.Split('=')[0];
-                    TreeNode subNode = solidBRepNode.Nodes.Add(idText);
-                    AddSubTreeView(line, subNode);
-                }
+                TreeNode categoryNode = root.Nodes.Add($"{entityType} ({count})");
+
+                categoryNodes[entityType] = categoryNode;
+                countTotal = countTotal + count;
             }
+
+            root.Text = $"STEP FILE ({countTotal})";  // Update the root node text with the total count number
+
+            foreach (KeyValuePair<string, string> entity in entityMap)
+            {
+                string id = entity.Key;
+                string line = entity.Value;
+                string entityType = GetEntityType(line);
+
+                if (!categoryNodes.ContainsKey(entityType))
+                {
+                    continue;
+                }
+
+                TreeNode entityNode = categoryNodes[entityType].Nodes.Add($"{id} [{entityType}]");
+
+                entityNode.Tag = id;
+
+                AddReferenceNodes(line, entityNode);
+            }
+            root.Expand();
+        }
+
+        private void AddReferenceNodes(string line, TreeNode parentNode)
+        {
+            List<string> references = GetReferences(line);
+
+            foreach (string referenceId in references)
+            {
+                string displayText = referenceId;
+
+                if (entityMap.TryGetValue(referenceId, out string referencedLine))
+                {
+                    string referencedType = GetEntityType(referencedLine);
+
+                    displayText = $"{referenceId} [{referencedType}]";
+                }
+
+                TreeNode referenceNode = parentNode.Nodes.Add(displayText);
+
+                referenceNode.Tag = referenceId;
+            }
+        }
+
+        private string GetEntityType(string line)
+        {
+            int entityTypeIndex = line.IndexOf('(');
+
+            if (entityTypeIndex < 0)
+            {
+                return line;
+            }
+            return line.Substring(0, entityTypeIndex);
         }
 
         private void treeView_STEP_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            string nodeText = e.Node.Text;
+            if(e.Node.Tag == null) { return; }
 
-            foreach (string line in lines)
+            string id = e.Node.Tag.ToString();
+
+            if(entityMap.ContainsKey(id))
             {
-                if (line.StartsWith(nodeText + "="))
-                {
-                    richTextBox_Entity.Text = line;
-                    break;
-                }
+                richTextBox_Entity.Text = entityMap[id];
             }
         }
 
@@ -168,21 +181,11 @@ namespace STEPInspector
             List<string> refs = new List<string>();
             MatchCollection matches = Regex.Matches(line, @"#\d+");
 
-            // Add matches to ids except the first value
-            for (int i=1; i<matches.Count; i++)
+            for (int i = 0; i < matches.Count; i++)
             {
                 refs.Add(matches[i].Value);
             }
             return refs;
-        }
-
-        private void AddSubTreeView(String line, TreeNode treeNode)
-        {
-            List<string> subElements = GetReferences(line);
-            foreach(String subElement in subElements)
-            {
-                treeNode.Nodes.Add(subElement);
-            }
         }
     }
 }

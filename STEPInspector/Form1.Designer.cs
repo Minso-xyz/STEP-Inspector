@@ -38,7 +38,7 @@
             // 
             button_OpenSTEPFile.Location = new Point(22, 22);
             button_OpenSTEPFile.Name = "button_OpenSTEPFile";
-            button_OpenSTEPFile.Size = new Size(122, 36);
+            button_OpenSTEPFile.Size = new Size(113, 36);
             button_OpenSTEPFile.TabIndex = 0;
             button_OpenSTEPFile.Text = "Select STEP file";
             button_OpenSTEPFile.UseVisualStyleBackColor = true;
@@ -46,18 +46,18 @@
             // 
             // treeView_STEP
             // 
-            treeView_STEP.Location = new Point(22, 77);
+            treeView_STEP.Location = new Point(22, 107);
             treeView_STEP.Name = "treeView_STEP";
             treeView_STEP.ShowNodeToolTips = true;
-            treeView_STEP.Size = new Size(242, 242);
+            treeView_STEP.Size = new Size(385, 242);
             treeView_STEP.TabIndex = 9;
             treeView_STEP.AfterSelect += treeView_STEP_AfterSelect;
             // 
             // richTextBox_Entity
             // 
-            richTextBox_Entity.Location = new Point(270, 77);
+            richTextBox_Entity.Location = new Point(22, 80);
             richTextBox_Entity.Name = "richTextBox_Entity";
-            richTextBox_Entity.Size = new Size(258, 242);
+            richTextBox_Entity.Size = new Size(385, 21);
             richTextBox_Entity.TabIndex = 10;
             richTextBox_Entity.Text = "";
             // 
@@ -66,7 +66,7 @@
             label_Status.AutoSize = true;
             label_Status.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label_Status.ForeColor = SystemColors.ActiveCaptionText;
-            label_Status.Location = new Point(166, 43);
+            label_Status.Location = new Point(143, 43);
             label_Status.Name = "label_Status";
             label_Status.Size = new Size(105, 15);
             label_Status.TabIndex = 11;
@@ -76,7 +76,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(543, 331);
+            ClientSize = new Size(424, 361);
             Controls.Add(label_Status);
             Controls.Add(richTextBox_Entity);
             Controls.Add(treeView_STEP);

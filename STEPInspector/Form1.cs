@@ -16,18 +16,9 @@ namespace STEPInspector
             entityMap = new Dictionary<string, string>();
         }
 
-        private readonly string[] supportedEntityTypes =
-        {
-            "CARTESIAN_POINT",
-            "VERTEX_POINT",
-            "EDGE_CURVE",
-            "ADVANCED_FACE",
-            "MANIFOLD_SOLID_BREP",
-            "LINE",
-            "VECTOR",
-            "CIRCLE",
-            "PLANE"
-        };
+        // Get the list of entities to read
+        string[] supportedEntityTypes =File.ReadAllLines(@"Schemas\Custom.txt");
+        
 
         private void button_OpenSTEPFile_Click(object sender, EventArgs e)
         {
@@ -105,10 +96,13 @@ namespace STEPInspector
             {
                 int count = entityMap.Values.Count(line => GetEntityType(line) == entityType);
 
-                TreeNode categoryNode = root.Nodes.Add($"{entityType} ({count})");
+                if (count != 0)
+                {
+                    TreeNode categoryNode = root.Nodes.Add($"{entityType} ({count})");
 
-                categoryNodes[entityType] = categoryNode;
-                countTotal = countTotal + count;
+                    categoryNodes[entityType] = categoryNode;
+                    countTotal = countTotal + count;
+                }
             }
 
             root.Text = $"STEP FILE ({countTotal})";  // Update the root node text with the total count number

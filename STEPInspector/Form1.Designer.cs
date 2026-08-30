@@ -38,7 +38,7 @@
             // 
             button_OpenSTEPFile.Location = new Point(22, 22);
             button_OpenSTEPFile.Name = "button_OpenSTEPFile";
-            button_OpenSTEPFile.Size = new Size(113, 36);
+            button_OpenSTEPFile.Size = new Size(163, 36);
             button_OpenSTEPFile.TabIndex = 0;
             button_OpenSTEPFile.Text = "Select STEP file";
             button_OpenSTEPFile.UseVisualStyleBackColor = true;
@@ -66,11 +66,11 @@
             label_Status.AutoSize = true;
             label_Status.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label_Status.ForeColor = SystemColors.ActiveCaptionText;
-            label_Status.Location = new Point(164, 43);
+            label_Status.Location = new Point(22, 78);
             label_Status.Name = "label_Status";
-            label_Status.Size = new Size(105, 15);
+            label_Status.Size = new Size(222, 15);
             label_Status.TabIndex = 11;
-            label_Status.Text = "Select a STEP file.";
+            label_Status.Text = "Select the STEP standard and STEP file.";
             // 
             // Form1
             // 

@@ -43,6 +43,43 @@ STEP FILE "Ravioli"
  └── ...
 ```
 
+### UI:
+![STEPInspector](UI.png) 
+
+### Supported Entity Types:
+- You can add or remove entity types in the file: ``` @Schemas/Custom.txt ```
+- Lists of available entities for AP203, AP214, and AP242 will be available soon.
+
+### Currently Listed Entity Types (Default):
+```text
+CARTESIAN_POINT
+VERTEX_POINT
+EDGE_CURVE
+EDGE_LOOP
+ADVANCED_FACE
+MANIFOLD_SOLID_BREP
+LINE
+VECTOR
+CIRCLE
+ELLIPSE
+CURVE
+PLANE
+CLOSED_SHELL
+FACE_BOUND
+FACE_OUTER_BOUND
+ORIENTED_EDGE
+AXIS2_PLACEMENT_3D
+B_SPLINE_CURVE
+B_SPLINE_CURVE_WITH_KNOTS
+B_SPLINE_SURFACE
+B_SPLINE_SURFACE_WITH_KNOTS
+RATIONAL_B_SPLINE_SURFACE
+CYLINDRICAL_SURFACE
+CONICAL_SURFACE
+TOROIDAL_SURFACE
+```
+
+
 
 🚧 **Work in Progress** 🚧
 

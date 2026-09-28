@@ -7,7 +7,7 @@ if (args.Length ==0)
     return;
 }
 
-string filePath = @"ravioli.stp";
+string filePath = args[0];
 
 StepAnalyzer analyzer = new StepAnalyzer();
 StepMetadata metadata = analyzer.Analyze(filePath);

@@ -38,6 +38,10 @@ namespace STEPInspector
 
             filePath = openFileDialog.FileName;
 
+            // Test for StepAnalyzer & StepMetadata
+            StepAnalyzer analyzer = new StepAnalyzer();
+            StepMetadata metadata = analyzer.Analyze(filePath);
+
             // Update the status
             label_Status.Text = "Parsing the STEP file...";
 
